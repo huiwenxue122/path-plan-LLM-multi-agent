@@ -1,0 +1,22 @@
+name: roco
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy=1.22
+  - scipy=1.8
+  - matplotlib=3.5.1
+  - opencv  # ✅ 自动安装 arm64 兼容版本
+  - pydantic=1.10.4
+  - pip
+  - pip:
+      # ==== LLM 相关 ====
+      - openai>=1.45.0     # ✅ 新接口版本
+      - anthropic>=0.34.0  # 可选：Claude
+      - python-dotenv>=1.0.1
+      # ==== 仿真与控制 ====
+      - dm-control==1.0.8
+      - mujoco==2.3.0
+      - natsort==8.0.2
+

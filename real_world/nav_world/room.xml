@@ -1,0 +1,38 @@
+<mujoco model="nav_room">
+  <option timestep="0.01" gravity="0 0 -9.81"/>
+  <visual>
+    <map znear="0.01" zfar="50"/>
+  </visual>
+
+  <worldbody>
+    <!-- 地板 -->
+    <geom name="floor" type="plane" size="5 5 0.1" rgba="0.9 0.9 0.9 1"/>
+
+    <!-- 房间内墙（一个 8m x 6m 的矩形） -->
+    <geom name="wall_n" type="box" pos="0 3 0.5"  size="4 0.05 0.5" rgba="0.2 0.2 0.2 1" contype="1" conaffinity="1"/>
+    <geom name="wall_s" type="box" pos="0 -3 0.5" size="4 0.05 0.5" rgba="0.2 0.2 0.2 1" contype="1" conaffinity="1"/>
+    <geom name="wall_e" type="box" pos="4 0 0.5"  size="0.05 3 0.5" rgba="0.2 0.2 0.2 1" contype="1" conaffinity="1"/>
+    <geom name="wall_w" type="box" pos="-4 0 0.5" size="0.05 3 0.5" rgba="0.2 0.2 0.2 1" contype="1" conaffinity="1"/>
+
+    <!-- 障碍物（命名以 obst_ 开头方便解析） -->
+    <geom name="obst_1" type="box" pos="-1.0  0.0 0.25" size="0.4 0.2 0.25" rgba="0.6 0.2 0.2 1"/>
+    <geom name="obst_2" type="box" pos=" 1.2 -1.0 0.25" size="0.3 0.3 0.25" rgba="0.2 0.4 0.7 1"/>
+    <geom name="obst_3" type="box" pos=" 1.5  1.2 0.25" size="0.5 0.2 0.25" rgba="0.2 0.6 0.3 1"/>
+
+    <!-- 机器人 Alice（自由体） -->
+    <body name="alice" pos="-2.5 -2.0 0.1">
+      <freejoint/>
+      <geom type="cylinder" size="0.12 0.1" rgba="0.05 0.55 1.0 1" contype="1" conaffinity="1"/>
+    </body>
+
+    <!-- 机器人 Bob（自由体） -->
+    <body name="bob" pos="-2.5  2.0 0.1">
+      <freejoint/>
+      <geom type="cylinder" size="0.12 0.1" rgba="1.0 0.45 0.05 1" contype="1" conaffinity="1"/>
+    </body>
+
+    <!-- 目标点（绿色 site，便于渲染/检查） -->
+    <site name="goal_a" pos="3.0 -2.0 0.05" size="0.12" rgba="0.1 0.9 0.1 1"/>
+    <site name="goal_b" pos="3.0  2.0 0.05" size="0.12" rgba="0.1 0.9 0.1 1"/>
+  </worldbody>
+</mujoco>

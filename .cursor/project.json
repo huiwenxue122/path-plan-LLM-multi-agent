@@ -1,0 +1,29 @@
+{
+    "name": "Language-Driven Multi-Robot Pathfinding and Obstacle Avoidance",
+    "description": "This project explores language-driven multi-robot coordination for navigation and obstacle avoidance in the MuJoCo simulation environment. It extends the Robot-Collab framework to enable two ground robots to interpret high-level natural language instructions and translate them into structured subgoals.",
+    "repo": "https://github.com/huiwenxue122/co-robot-pathfinding.git",
+    "goals": [
+      "Build a 2D MuJoCo environment with obstacles and target zones.",
+      "Integrate two mobile robots for independent and cooperative navigation.",
+      "Connect to an LLM API for natural language task decomposition.",
+      "Implement inter-robot collision avoidance and coordination logic.",
+      "Visualize trajectories and performance metrics using matplotlib."
+    ],
+    "requirements": [
+      "Python 3.10",
+      "MuJoCo",
+      "OpenAI API",
+      "OpenCV",
+      "NumPy",
+      "Matplotlib"
+    ],
+    "entrypoints": [
+      "real_world/nav_world/nav_env.py"
+    ],
+    "instructions": [
+      "Run the MuJoCo simulation environment.",
+      "Debug and visualize robot trajectories.",
+      "Add LLM-based task decomposition logic."
+    ]
+  }
+  

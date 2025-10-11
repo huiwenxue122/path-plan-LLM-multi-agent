@@ -1,0 +1,45 @@
+<mujoco model="simple_room">
+  <option timestep="0.01" gravity="0 0 -9.81"/>
+  
+  <worldbody>
+    <!-- 地板 -->
+    <geom name="floor" type="plane" size="5 5 0.1" rgba="0.9 0.9 0.9 1"/>
+
+    <!-- 房间内墙 -->
+    <geom name="wall_n" type="box" pos="0 3 0.5"  size="4 0.05 0.5" rgba="0.2 0.2 0.2 1"/>
+    <geom name="wall_s" type="box" pos="0 -3 0.5" size="4 0.05 0.5" rgba="0.2 0.2 0.2 1"/>
+    <geom name="wall_e" type="box" pos="4 0 0.5"  size="0.05 3 0.5" rgba="0.2 0.2 0.2 1"/>
+    <geom name="wall_w" type="box" pos="-4 0 0.5" size="0.05 3 0.5" rgba="0.2 0.2 0.2 1"/>
+
+    <!-- 障碍物 -->
+    <geom name="obst_1" type="box" pos="-1.0  0.0 0.25" size="0.4 0.2 0.25" rgba="0.6 0.2 0.2 1"/>
+    <geom name="obst_2" type="box" pos=" 1.2 -1.0 0.25" size="0.3 0.3 0.25" rgba="0.2 0.4 0.7 1"/>
+    <geom name="obst_3" type="box" pos=" 1.5  1.2 0.25" size="0.5 0.2 0.25" rgba="0.2 0.6 0.3 1"/>
+
+    <!-- 机器人 Alice -->
+    <body name="alice" pos="-2.5 -2.0 0.1">
+      <joint name="alice_x" type="slide" axis="1 0 0"/>
+      <joint name="alice_y" type="slide" axis="0 1 0"/>
+      <geom type="cylinder" size="0.12 0.1" rgba="0.05 0.55 1.0 1"/>
+    </body>
+
+    <!-- 机器人 Bob -->
+    <body name="bob" pos="-2.5  2.0 0.1">
+      <joint name="bob_x" type="slide" axis="1 0 0"/>
+      <joint name="bob_y" type="slide" axis="0 1 0"/>
+      <geom type="cylinder" size="0.12 0.1" rgba="1.0 0.45 0.05 1"/>
+    </body>
+
+    <!-- 目标点 -->
+    <site name="goal_a" pos="3.0 -2.0 0.05" size="0.12" rgba="0.1 0.9 0.1 1"/>
+    <site name="goal_b" pos="3.0  2.0 0.05" size="0.12" rgba="0.1 0.9 0.1 1"/>
+  </worldbody>
+
+  <!-- 执行器 -->
+  <actuator>
+    <motor name="alice_x_motor" joint="alice_x" gear="1"/>
+    <motor name="alice_y_motor" joint="alice_y" gear="1"/>
+    <motor name="bob_x_motor" joint="bob_x" gear="1"/>
+    <motor name="bob_y_motor" joint="bob_y" gear="1"/>
+  </actuator>
+</mujoco>

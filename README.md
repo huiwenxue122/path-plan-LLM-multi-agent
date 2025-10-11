@@ -9,7 +9,43 @@ Codebase for paper: RoCo: Dialectic Multi-Robot Collaboration with Large Languag
 <img src="method.jpeg" alt="method" width="800"/>
 
 
-## Setup
+## 🎯 我的演示项目
+
+### 双机器人导航演示
+我基于原项目创建了一个双机器人导航演示，包含：
+- **`my_demos/robot_navigation_demo.py`** - 主要演示脚本（matplotlib动画）
+- **`my_demos/robot_navigation_animation.gif`** - 机器人运动动画
+- **`my_demos/robot_navigation_trajectory.png`** - 轨迹图
+- **`fixed_mujoco_viewer.py`** - MuJoCo 3D Viewer版本
+
+### 运行我的演示
+
+#### 方法1: MuJoCo 3D Viewer（推荐）
+```bash
+cd /Users/claire/co-robot-pathfinding
+mjpython fixed_mujoco_viewer.py
+```
+- ✅ 真正的3D可视化
+- ✅ 机器人会正常移动
+- ✅ 实时交互控制
+
+#### 方法2: Matplotlib动画
+```bash
+cd /Users/claire/co-robot-pathfinding
+python my_demos/robot_navigation_demo.py
+```
+- ✅ 生成GIF动画
+- ✅ 跨平台兼容
+
+### 查看结果
+```bash
+open my_demos/robot_navigation_animation.gif
+open my_demos/robot_navigation_trajectory.png
+```
+
+---
+
+## 原项目设置
 ### setup conda env and package install
 ```
 conda create -n roco python=3.8 
