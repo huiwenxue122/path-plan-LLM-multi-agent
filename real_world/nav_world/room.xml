@@ -16,10 +16,10 @@
 
     <!-- 障碍物 - 调整后确保有可行路径 -->
     <!-- 左上角障碍物 -->
-    <geom name="obst_top_left" type="box" pos="-2.0 2.2 0.25" size="0.3 0.6 0.25" rgba="0.95 0.75 0.1 1" contype="1" conaffinity="1"/>
+    <geom name="obst_top_left" type="box" pos="-2.0 1.6 0.25" size="0.3 1.1 0.25" rgba="0.95 0.75 0.1 1" contype="1" conaffinity="1"/>
     
     <!-- 右上角障碍物 -->
-    <geom name="obst_top_right" type="box" pos="2.5 2.2 0.25" size="0.3 0.6 0.25" rgba="0.95 0.75 0.1 1" contype="1" conaffinity="1"/>
+    <geom name="obst_top_right" type="box" pos="2 2 0.25" size="0.3 1.2 0.25" rgba="0.95 0.75 0.1 1" contype="1" conaffinity="1"/>
     
     <!-- 中央垂直障碍物 -->
     <geom name="obst_midcol" type="box" pos="0.5 0.0 0.25" size="0.2 1.0 0.25" rgba="0.95 0.75 0.1 1" contype="1" conaffinity="1"/>
@@ -31,7 +31,7 @@
     <geom name="obst_right_bar" type="box" pos="1.5 -1.0 0.25" size="1.0 0.2 0.25" rgba="0.95 0.75 0.1 1" contype="1" conaffinity="1"/>
     
     <!-- 底部障碍物 -->
-    <geom name="obst_bottom" type="box" pos="0.0 -2.0 0.25" size="0.8 0.3 0.25" rgba="0.95 0.75 0.1 1" contype="1" conaffinity="1"/>
+    <geom name="obst_bottom" type="box" pos="0.0 -2.2 0.25" size="0.8 0.2 0.25" rgba="0.95 0.75 0.1 1" contype="1" conaffinity="1"/>
 
     <!-- 机器人 -->
     <body name="alice" pos="-3.2 2.0 0.1">

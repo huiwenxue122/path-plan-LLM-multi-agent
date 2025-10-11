@@ -210,9 +210,18 @@ class NavEnv:
         # 移动每个机器人
         for name in self.agent_names:
             st = self.agents[name]
+            cur = np.array(self._get_body_xy(name))
+            goal = np.array(self.goal_xy[name])
+            
+            # 如果已经接近目标，直接移动到目标
+            dist_to_goal = np.linalg.norm(cur - goal)
+            if dist_to_goal < 0.1:  # 距离目标10cm以内
+                self._set_body_xy(name, float(goal[0]), float(goal[1]))
+                continue
+            
+            # 否则按路径移动
             if st.path_ptr >= len(st.path_world):
                 continue
-            cur = np.array(self._get_body_xy(name))
             tar = np.array(st.path_world[st.path_ptr])
             v   = st.speed
             # 如果另一个机器人很近，降速
@@ -267,7 +276,7 @@ class NavEnv:
         for name in self.agent_names:
             xy = np.array(self._get_body_xy(name))
             gy = np.array(self.goal_xy[name])
-            if np.linalg.norm(xy - gy) > 0.15:
+            if np.linalg.norm(xy - gy) > 0.05:  # 更严格的阈值：5cm
                 ok = False
                 break
         return ok

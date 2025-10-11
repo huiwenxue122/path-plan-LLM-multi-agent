@@ -31,7 +31,7 @@ def main():
     
     # 运行仿真并记录轨迹
     print("\n🚀 开始仿真...")
-    T = 10.0
+    T = 15.0  # 增加仿真时间到15秒
     fps = 30
     dt = 1.0 / fps
     steps = int(T * fps)
@@ -70,12 +70,12 @@ def main():
     
     # 绘制障碍物 - 匹配新的room.xml布局
     obstacles = [
-        {'pos': (-2.0, 2.2), 'size': (0.3, 0.6), 'color': 'orange'},  # obst_top_left
-        {'pos': (2.5, 2.2), 'size': (0.3, 0.6), 'color': 'orange'},   # obst_top_right
+        {'pos': (-2.0, 1.6), 'size': (0.3, 1.1), 'color': 'orange'},  # obst_top_left
+        {'pos': (2.0, 2.0), 'size': (0.3, 1.2), 'color': 'orange'},   # obst_top_right
         {'pos': (0.5, 0.0), 'size': (0.2, 1.0), 'color': 'orange'},   # obst_midcol
         {'pos': (-1.5, -0.5), 'size': (1.0, 0.2), 'color': 'orange'}, # obst_left_bar
         {'pos': (1.5, -1.0), 'size': (1.0, 0.2), 'color': 'orange'},  # obst_right_bar
-        {'pos': (0.0, -2.0), 'size': (0.8, 0.3), 'color': 'orange'},  # obst_bottom
+        {'pos': (0.0, -2.2), 'size': (0.8, 0.2), 'color': 'orange'},  # obst_bottom
     ]
     
     for obs in obstacles:
