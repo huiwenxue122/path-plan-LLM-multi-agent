@@ -14,14 +14,14 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from real_world.nav_world.nav_env import NavEnv
+from nav_world.nav_env import NavEnv
 
 def main():
     print("🎬 工作视频生成器")
     print("=" * 40)
     
     # 创建环境
-    xml_path = os.path.join(project_root, "real_world", "nav_world", "room.xml")
+    xml_path = os.path.join(project_root, "nav_world", "room.xml")
     env = NavEnv(xml_path=xml_path, grid_res=0.1)
     env.reset()
     

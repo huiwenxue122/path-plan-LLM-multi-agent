@@ -1,7 +1,22 @@
 data/
 openai_key.json
 claude_key.json
+.env
 .DS_Store
+
+# Project-specific ignores
+results/*.png
+results/*.gif
+results/*.mp4
+mapf_navigation_result.png
+robot_navigation_animation.mp4
+robot_navigation_trajectory.png
+*.mp4
+*.gif
+
+# Cleanup/summary files (optional - can be kept or removed)
+CLEANUP_SUMMARY.md
+FINAL_CLEANUP_SUMMARY.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

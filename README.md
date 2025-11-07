@@ -8,77 +8,111 @@ Codebase for paper: RoCo: Dialectic Multi-Robot Collaboration with Large Languag
 
 <img src="method.jpeg" alt="method" width="800"/>
 
-## 🎯 Dual-Robot Navigation Demo
+## 🎯 Enhanced Dual-Robot Navigation System
 
 ### Overview
-This repository contains an enhanced dual-robot navigation demonstration built on top of the original RoCo project. The demo features two robots (Alice and Bob) navigating through a challenging obstacle course using A* pathfinding algorithm with MuJoCo physics simulation.
+This repository contains an enhanced dual-robot navigation system built on top of the original RoCo project. The system features:
+- **Multi-Agent Path Finding (MAPF)**: Priority-based collision-free path planning
+- **Natural Language Control**: LLM-powered command parsing for robot control
+- **Real-time 3D Visualization**: MuJoCo 3D viewer with interactive controls
+- **Challenging Obstacle Course**: 6 strategically placed obstacles requiring complex navigation
 
-### Features
-- **A* Path Planning**: Intelligent obstacle avoidance with optimal path finding
-- **Dual-Robot Coordination**: Two robots navigating simultaneously without collisions
-- **3D Visualization**: Real-time MuJoCo 3D viewer with interactive controls
-- **2D Animation**: Matplotlib-based trajectory visualization and animation
-- **Challenging Layout**: 6 strategically placed obstacles requiring complex navigation
+### Key Features
 
-### Demo Files
-- **`my_demos/robot_navigation_demo.py`** - Main demo script (matplotlib animation)
-- **`my_demos/robot_navigation_animation.gif`** - Robot motion animation
-- **`my_demos/robot_navigation_trajectory.png`** - Trajectory plot
-- **`fixed_mujoco_viewer.py`** - MuJoCo 3D Viewer version
+#### 1. Multi-Agent Path Finding (MAPF)
+- **Priority Planning**: Higher-priority robots plan first, avoiding collisions
+- **Vertex & Edge Conflict Prevention**: Prevents same-position and position-swapping conflicts
+- **Time-Extended A***: Time-aware path planning with wait actions
+- **Reservation Table**: Tracks occupied positions and edges across time
 
-### Running the Demo
+#### 2. Natural Language Control
+- **LLM Integration**: GPT-4o powered command parsing
+- **Structured Task Plans**: Pydantic models for robust validation
+- **Offline Mode**: Deterministic parsing for demos without API calls
+- **Example Commands**: 
+  - `"Robot A go to (3, 2), Robot B go to (-2, 2), A has priority"`
+  - `"Alice 先到达目标，Bob 等 2 秒再出发"` (Chinese supported)
 
-#### Method 1: MuJoCo 3D Viewer (Recommended)
+#### 3. Visualization
+- **3D MuJoCo Viewer**: Real-time interactive visualization
+- **2D Matplotlib Animation**: Cross-platform trajectory visualization
+- **Path Visualization**: Visual representation of planned paths
+
+### Quick Start
+
+#### Method 1: End-to-End Natural Language Navigation (Recommended)
 ```bash
 cd /Users/claire/co-robot-pathfinding
-mjpython fixed_mujoco_viewer.py
+./llm_interface/run_with_viewer.sh
+# Or directly:
+python llm_interface/end_to_end_navigation.py
 ```
-- ✅ True 3D visualization
-- ✅ Real-time robot movement
-- ✅ Interactive controls (ESC to exit, Space to pause)
+Then type a natural language command like:
+```
+Robot A go to (3, 2), Robot B go to (-2, 2), A has priority
+```
 
-#### Method 2: Matplotlib Animation
+#### Method 2: MAPF Path Planning Demo
+```bash
+cd /Users/claire/co-robot-pathfinding
+python nav_world/run_mapf_demo.py
+```
+
+#### Method 3: 2D Matplotlib Animation
 ```bash
 cd /Users/claire/co-robot-pathfinding
 python my_demos/robot_navigation_demo.py
 ```
-- ✅ Generates GIF animation
-- ✅ Cross-platform compatible
 
-#### Method 3: Original Project Video Generation
-```bash
-cd /Users/claire/co-robot-pathfinding
-python real_world/runners/run_nav_full.py
+### Project Structure
 ```
-- ✅ Generates high-quality MP4 video
-- ✅ Suitable for paper production
+co-robot-pathfinding/
+├── llm_interface/                    # Natural language control
+│   ├── end_to_end_navigation.py     # Main end-to-end controller ⭐
+│   ├── llm_controller.py            # LLM parsing (Pydantic models)
+│   ├── find_valid_commands.py       # Utility to find valid goals
+│   └── run_with_viewer.sh          # Launch script ⭐
+│
+├── nav_world/                       # Core navigation system
+│   ├── nav_env_mapf.py             # MAPF-integrated environment
+│   ├── multi_agent_planner.py      # MAPF algorithm (Priority Planning)
+│   ├── nav_env.py                  # Base navigation environment
+│   ├── room.xml                    # MuJoCo 3D scene
+│   ├── run_mapf_demo.py            # MAPF demo script
+│   └── test_mapf.py                # MAPF test script
+│
+├── my_demos/                        # 2D visualization demos
+│   └── robot_navigation_demo.py    # Matplotlib animation
+│
+├── results/                         # Generated visualization files
+│
+└── Documentation/
+    ├── README.md                    # This file
+    ├── MAPF_IMPLEMENTATION_EXPLAINED.md
+    ├── END_TO_END_NAVIGATION_GUIDE.md
+    └── RUN_MAPF_3D.md
 
-### Viewing Results
-```bash
-open my_demos/robot_navigation_animation.gif
-open my_demos/robot_navigation_trajectory.png
+⭐ = Main entry points
 ```
 
 ### Technical Details
 
 #### Robot Configuration
-- **Alice**: Blue robot navigating from (-3.2, 2.0) to (3.0, 1.6)
-- **Bob**: Green robot navigating from (-3.2, -2.3) to (3.2, -1.0)
+- **Alice**: Blue robot (default start: (-3.2, 2.0))
+- **Bob**: Green robot (default start: (-3.2, -2.3))
+- Goals can be set via natural language commands
 
-#### Obstacle Layout
-The environment features 6 strategically placed obstacles:
-1. **Top-left obstacle**: Blocks upper-left area
-2. **Top-right obstacle**: Blocks upper-right area  
-3. **Central vertical obstacle**: Blocks center path
-4. **Left horizontal obstacle**: Blocks left horizontal path
-5. **Right horizontal obstacle**: Blocks right horizontal path
-6. **Bottom obstacle**: Blocks lower area
+#### Path Planning Algorithms
+- **MAPF (Priority Planning)**: Multi-agent collision-free path planning
+  - Time-extended A* search
+  - Reservation table for conflict prevention
+  - Supports wait actions
+- **A* (Fallback)**: Single-agent path planning for independent navigation
 
-#### Path Planning Algorithm
-- **A* Algorithm**: Optimal pathfinding with obstacle avoidance
+#### Environment
 - **Grid Resolution**: 0.1m for precise navigation
-- **Kinematic Control**: Direct position control using MuJoCo freejoint
-- **Multi-robot Coordination**: Independent path planning for each robot
+- **Obstacle Layout**: 6 strategically placed obstacles
+- **Room Size**: 8m × 6m with walls
 
 ### Requirements
 - Python 3.8+
@@ -99,20 +133,6 @@ pip install -r requirements.txt
 pip install mujoco
 ```
 
-### Project Structure
-```
-co-robot-pathfinding/
-├── fixed_mujoco_viewer.py          # 3D Viewer (recommended)
-├── my_demos/                       # Demo project
-│   ├── robot_navigation_demo.py   # Matplotlib animation
-│   ├── robot_navigation_animation.gif
-│   └── robot_navigation_trajectory.png
-├── real_world/                     # Original project code
-│   ├── nav_world/nav_env.py        # Core navigation environment
-│   ├── nav_world/room.xml          # 3D scene definition
-│   └── runners/                    # Original project runners
-└── README.md                       # This file
-```
 
 ---
 
