@@ -111,19 +111,8 @@ class EndToEndNavigationController:
             print(f"⏱️  Delays: {agent_delays}")
             for nav_id, delay in agent_delays.items():
                 if delay > 0:
-                    # For demo purposes, cap delays at 10 seconds (convert minutes to seconds for demo)
-                    if delay > 10.0:
-                        original_delay = delay
-                        # If delay is in minutes (>= 60), convert to demo seconds (1 minute = 1 second for demo)
-                        if delay >= 60.0:
-                            delay = delay / 60.0  # Convert minutes to seconds for demo
-                            if delay > 10.0:
-                                delay = 10.0  # Cap at 10 seconds for demo
-                            print(f"   {nav_id.capitalize()} will wait {delay:.1f} seconds (demo: {original_delay/60:.1f} min → {delay:.1f}s)")
-                        else:
-                            delay = min(delay, 10.0)  # Cap at 10 seconds
-                            print(f"   {nav_id.capitalize()} will wait {delay:.1f} seconds before starting")
-                        agent_delays[nav_id] = delay
+                    if delay >= 60.0:
+                        print(f"   {nav_id.capitalize()} will wait {delay:.1f} seconds ({delay/60:.1f} minutes) before starting")
                     else:
                         print(f"   {nav_id.capitalize()} will wait {delay:.1f} seconds before starting")
     
@@ -378,10 +367,16 @@ class EndToEndNavigationController:
                     print("   Robots will follow MAPF-planned collision-free paths")
                     print("   Press ESC to exit\n")
                     
-                    T = 15.0
+                    # Calculate simulation time based on delays
+                    max_delay = max(self.agent_delays.values()) if self.agent_delays else 0.0
+                    # Base simulation time + max delay + buffer for path execution
+                    T = 15.0 + max_delay + 5.0  # Add buffer for path execution after delay
                     fps = 30
                     dt = 1.0 / fps
                     steps = int(T * fps)
+                    
+                    if max_delay > 0:
+                        print(f"⏱️  Maximum delay: {max_delay:.1f}s, simulation time: {T:.1f}s")
                     
                     # Track current simulation time
                     current_time = 0.0
@@ -452,10 +447,16 @@ class EndToEndNavigationController:
         """Execute without viewer (headless mode)"""
         print("\n🏃 Running simulation (headless mode)...")
         
-        T = 15.0
+        # Calculate simulation time based on delays
+        max_delay = max(self.agent_delays.values()) if self.agent_delays else 0.0
+        # Base simulation time + max delay + buffer for path execution
+        T = 15.0 + max_delay + 5.0  # Add buffer for path execution after delay
         fps = 30
         dt = 1.0 / fps
         steps = int(T * fps)
+        
+        if max_delay > 0:
+            print(f"⏱️  Maximum delay: {max_delay:.1f}s, simulation time: {T:.1f}s")
         
         # Track current simulation time
         current_time = 0.0
