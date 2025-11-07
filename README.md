@@ -140,6 +140,34 @@ Note: The system will work in offline mode without an API key, using determinist
 
 ---
 
+## 🎬 Results & Demos
+
+### Navigation Animations
+
+#### 2D Trajectory Visualization
+![Robot Navigation Animation](results/robot_navigation_animation.gif)
+
+#### MAPF Path Planning Results
+![MAPF Navigation Result](results/mapf_navigation_result.png)
+
+#### LLM-Controlled Navigation
+![LLM Navigation Result](results/llm_navigation_result.png)
+
+### Test Cases
+
+#### MAPF Test Case 1
+![MAPF Test Case 1](results/mapf_test_case1.png)
+
+#### MAPF Test Case 2
+![MAPF Test Case 2](results/mapf_test_case2.png)
+
+#### Trajectory Plot
+![Robot Navigation Trajectory](results/robot_navigation_trajectory.png)
+
+> **Note**: All result files are stored in the `results/` directory. The GIF animation shows the 2D trajectory visualization, while PNG files show path planning results and test cases.
+
+---
+
 ## 📚 Documentation
 
 - **[HOW_TO_RUN.md](HOW_TO_RUN.md)** - Complete running guide with examples
