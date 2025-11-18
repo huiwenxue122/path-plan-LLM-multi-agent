@@ -149,7 +149,7 @@ mjpython llm_interface/end_to_end_navigation.py
 Robot A go to (3.0, 1.6), Robot B go to (3.2, -1.0), A has priority
 ```
 
-更多命令示例：查看 `llm_interface/VALID_COMMANDS.md`
+更多命令示例：查看 `VALID_COMMANDS.md`
 
 ---
 
@@ -183,5 +183,5 @@ python -c "import mujoco; m = mujoco.MjModel.from_xml_string('<mujoco><worldbody
 
 - **查找可用命令**: `python llm_interface/find_valid_commands.py`
 - **完整使用指南**: `llm_interface/README.md`
-- **MAPF说明**: `MAPF_IMPLEMENTATION_EXPLAINED.md`
+- **MAPF说明**: `../technical/MAPF_IMPLEMENTATION_EXPLAINED.md`
 

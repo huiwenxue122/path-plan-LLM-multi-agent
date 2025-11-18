@@ -188,7 +188,7 @@ class EndToEndNavigationController:
             print("   1. Check environment bounds: x ∈ [-4.0, 4.0], y ∈ [-3.0, 3.0]")
             print("   2. Avoid positions on the left side (x < 0) - many obstacles there")
             print("   3. Try goal positions on the right side: x > 2.0")
-            print("   4. Use recommended commands from llm_interface/VALID_COMMANDS.md")
+            print("   4. Use recommended commands from docs/user_guides/VALID_COMMANDS.md")
             print("\n📝 Example valid commands:")
             print("   - Robot A go to (3.0, 1.6), Robot B go to (3.2, -1.0), A has priority")
             print("   - Robot A go to (2.0, 1.0), Robot B go to (2.0, -1.0), A has priority")

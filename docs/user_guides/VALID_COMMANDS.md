@@ -133,5 +133,5 @@ Robot A go to (3.0, 1.6), Robot B go to (3.2, -1.0), A has priority
 
 - **查找工具**: `python llm_interface/find_valid_commands.py`
 - **完整文档**: `llm_interface/README.md`
-- **MAPF说明**: `MAPF_IMPLEMENTATION_EXPLAINED.md`
+- **MAPF说明**: `../technical/MAPF_IMPLEMENTATION_EXPLAINED.md`
 

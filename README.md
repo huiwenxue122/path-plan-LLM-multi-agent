@@ -75,11 +75,11 @@ language-driven-LLM-path-planing/
 │
 ├── results/                         # Generated visualization files
 │
-└── Documentation/
-    ├── README.md                    # This file
-    ├── MAPF_IMPLEMENTATION_EXPLAINED.md
-    ├── END_TO_END_NAVIGATION_GUIDE.md
-    └── RUN_MAPF_3D.md
+└── docs/                            # Documentation (organized by category)
+    ├── user_guides/                 # User-facing guides
+    ├── technical/                   # Technical documentation
+    ├── project_reports/             # Project reports
+    └── module_docs/                 # Module-specific READMEs
 
 ⭐ = Main entry points
 ```
@@ -170,10 +170,30 @@ Note: The system will work in offline mode without an API key, using determinist
 
 ## 📚 Documentation
 
-- **[HOW_TO_RUN.md](HOW_TO_RUN.md)** - Complete running guide with examples
-- **[MAPF_IMPLEMENTATION_EXPLAINED.md](MAPF_IMPLEMENTATION_EXPLAINED.md)** - Detailed MAPF algorithm explanation
-- **[END_TO_END_NAVIGATION_GUIDE.md](END_TO_END_NAVIGATION_GUIDE.md)** - End-to-end system guide
-- **[llm_interface/VALID_COMMANDS.md](llm_interface/VALID_COMMANDS.md)** - Valid command examples
+### 🎓 Learning Guide
+- **[LEARNING_GUIDE.md](docs/LEARNING_GUIDE.md)** ⭐ **Start Here!** - Complete learning path with code reading order and technical details
+
+### User Guides
+- **[HOW_TO_RUN.md](docs/user_guides/HOW_TO_RUN.md)** - Complete running guide with examples
+- **[END_TO_END_NAVIGATION_GUIDE.md](docs/user_guides/END_TO_END_NAVIGATION_GUIDE.md)** - End-to-end system guide
+- **[RUN_MAPF_3D.md](docs/user_guides/RUN_MAPF_3D.md)** - MAPF 3D visualization guide
+- **[HOW_TO_USE_3D_VIEWER.md](docs/user_guides/HOW_TO_USE_3D_VIEWER.md)** - 3D viewer usage guide
+- **[VALID_COMMANDS.md](docs/user_guides/VALID_COMMANDS.md)** - Valid command examples
+
+### Technical Documentation
+- **[MAPF_IMPLEMENTATION_EXPLAINED.md](docs/technical/MAPF_IMPLEMENTATION_EXPLAINED.md)** - Detailed MAPF algorithm explanation
+- **[HOW_LLM_CONTROLS_PATH_PLANNING.md](docs/technical/HOW_LLM_CONTROLS_PATH_PLANNING.md)** - LLM control flow explanation
+- **[NAV_ENV_VS_NAV_ENV_MAPF.md](docs/technical/NAV_ENV_VS_NAV_ENV_MAPF.md)** - File comparison guide
+- **[MAPF_README.md](docs/technical/MAPF_README.md)** - MAPF module documentation
+- **[HOW_TO_RUN_MAPF.md](docs/technical/HOW_TO_RUN_MAPF.md)** - MAPF technical guide
+
+### Project Reports
+- **[PROJECT_CHALLENGES.md](docs/project_reports/PROJECT_CHALLENGES.md)** - Challenges encountered
+- **[PROJECT_CHANGES.md](docs/project_reports/PROJECT_CHANGES.md)** - Before/after comparison
+- **[PROJECT_PROGRESS.md](docs/project_reports/PROJECT_PROGRESS.md)** - Progress report
+- **[PROJECT_SCOPE.md](docs/project_reports/PROJECT_SCOPE.md)** - Scope assessment
+- **[PROJECT_SCOPE_DEFINITION.md](docs/project_reports/PROJECT_SCOPE_DEFINITION.md)** - Scope definition
+- **[PROJECT_SUCCESS.md](docs/project_reports/PROJECT_SUCCESS.md)** - Success measures
 
 ---
 

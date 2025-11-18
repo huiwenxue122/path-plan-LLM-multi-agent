@@ -64,7 +64,7 @@ python llm_interface/end_to_end_navigation.py
 - `Robot A go to (2.0, 1.0), Robot B go to (2.0, -1.0), A has priority`
 - `Robot A go to (2.0, 0.3), Robot B go to (2.0, -2.5), A has priority`
 
-**更多命令示例：** 查看 `llm_interface/VALID_COMMANDS.md`
+**更多命令示例：** 查看 `VALID_COMMANDS.md`
 
 ---
 
@@ -220,9 +220,9 @@ xdg-open results/robot_navigation_trajectory.png
 ## 📚 更多文档
 
 - **LLM接口文档**: `llm_interface/README.md`
-- **MAPF实现说明**: `MAPF_IMPLEMENTATION_EXPLAINED.md`
+- **MAPF实现说明**: `../technical/MAPF_IMPLEMENTATION_EXPLAINED.md`
 - **端到端导航指南**: `END_TO_END_NAVIGATION_GUIDE.md`
-- **可用命令列表**: `llm_interface/VALID_COMMANDS.md`
+- **可用命令列表**: `VALID_COMMANDS.md`
 
 ---
 
