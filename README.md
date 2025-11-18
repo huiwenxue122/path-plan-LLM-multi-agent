@@ -161,8 +161,6 @@ Note: The system will work in offline mode without an API key, using determinist
 #### MAPF Test Case 2
 ![MAPF Test Case 2](results/mapf_test_case2.png)
 
-#### Trajectory Plot
-![Robot Navigation Trajectory](results/robot_navigation_trajectory.png)
 
 > **Note**: All result files are stored in the `results/` directory. The GIF animation shows the 2D trajectory visualization, while PNG files show path planning results and test cases.
 
