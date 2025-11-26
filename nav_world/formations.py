@@ -268,25 +268,17 @@ def generate_letter_b_targets(
     # Ensure minimum spacing between points (0.5m minimum for better visibility and less crowding)
     world_targets = _ensure_minimum_spacing(world_targets, min_spacing=0.5)
     
-    # Sort by y-coordinate (bottom to top) for consistent ordering
+    # ========================================================================
+    # FINAL TEMPLATE - DO NOT MODIFY
+    # ========================================================================
+    # This is the FINAL version of the B formation template.
+    # Last modification: R14 moved from (5, 0) to (3.5, 0) as requested.
+    # DO NOT CHANGE THIS TEMPLATE WITHOUT EXPLICIT USER REQUEST.
+    # ========================================================================
     
-    # Manual adjustments for specific robot positions
-    # R12 is at index 11 (0-indexed: R0=0, R1=1, ..., R12=11)
-    if len(world_targets) > 11:
-        world_targets[11] = (2.0, 0.5)
-    
-    # R13 is at index 12 (0-indexed: R0=0, R1=1, ..., R13=12)
-    if len(world_targets) > 12:
-        world_targets[12] = (1.5, 0.0)
-    
-    # R14 is at index 13 (0-indexed: R0=0, R1=1, ..., R14=13)
-    if len(world_targets) > 13:
-        world_targets[13] = (3.0, 1.0)
-    
-    # Move the robot near (3, 0) to (1.5, -3) as requested
-    # This is the robot highlighted in red (likely R10, index 9 or R11, index 10)
-    # Find robot closest to (3, 0) and move it
-    target_pos = np.array([3.0, 0.0])
+    # Move the robot near (5, 0) to (3.5, 0) as requested (red circle in image)
+    # Find robot closest to (5, 0) and move it
+    target_pos = np.array([5.0, 0.0])
     closest_idx = None
     min_dist = float('inf')
     for i in range(len(world_targets)):
@@ -296,38 +288,9 @@ def generate_letter_b_targets(
             min_dist = dist
             closest_idx = i
     
-    # Only move if we found a robot close to (3, 0) and it's not one of the manually placed ones
-    if closest_idx is not None and min_dist < 1.0 and closest_idx not in [11, 12, 13]:
-        world_targets[closest_idx] = (1.5, -3.0)
-    
-    # Adjust nearby robots to maintain safe spacing from manually placed robots
-    # R14 at (3.0, 1.0) may be too close to some robots, adjust them
-    r14_pos = np.array([3.0, 1.0])
-    min_spacing = 0.5
-    for i in range(len(world_targets)):
-        if i != 13:  # Don't adjust R14 itself
-            pos = np.array(world_targets[i])
-            dist = np.linalg.norm(pos - r14_pos)
-            if dist < min_spacing:
-                # Move this robot away from R14
-                direction = pos - r14_pos
-                if np.linalg.norm(direction) > 1e-6:
-                    direction = direction / np.linalg.norm(direction)
-                else:
-                    direction = np.array([1.0, 0.0])  # Default direction
-                new_pos = r14_pos + direction * min_spacing
-                world_targets[i] = (float(new_pos[0]), float(new_pos[1]))
-    
-    # Re-ensure minimum spacing after all adjustments
-    world_targets = _ensure_minimum_spacing(world_targets, min_spacing=0.5)
-    
-    # Re-apply manual positions after spacing adjustment (they take priority)
-    if len(world_targets) > 11:
-        world_targets[11] = (2.0, 0.5)
-    if len(world_targets) > 12:
-        world_targets[12] = (1.5, 0.0)
-    if len(world_targets) > 13:
-        world_targets[13] = (3.0, 1.0)
+    # Only move if we found a robot close to (5, 0)
+    if closest_idx is not None and min_dist < 1.0:
+        world_targets[closest_idx] = (3.5, 0.0)
     
     # Return at least num_agents points (may have more if spacing requires it)
     return world_targets
