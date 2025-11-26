@@ -77,9 +77,9 @@ class NavEnv:
         self.goal_sites = {"alice": "goal_a", "bob": "goal_b"}
 
         # 推断场地边界（按内墙尺寸来）
-        # 这里直接硬编码与 XML 一致：x ∈ [-4, 4], y ∈ [-3, 3]
-        self.xmin, self.xmax = -4.0, 4.0
-        self.ymin, self.ymax = -3.0, 3.0
+        # 更新为与 room_formation.xml 一致：x ∈ [-8, 8], y ∈ [-7, 7] (16m x 14m)
+        self.xmin, self.xmax = -8.0, 8.0
+        self.ymin, self.ymax = -7.0, 7.0
 
         # 构建占据栅格
         self.grid, self.grid_xs, self.grid_ys = self._build_occupancy()
@@ -100,19 +100,52 @@ class NavEnv:
         用名字定位 body id -> joint id -> qpos addr
         """
         self.qpos_addr = {}
+        self.qvel_addr = {}  # Store qvel address for each robot
         for name in self.agent_names:
             bid = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, name)
             jid = self.model.body_jntadr[bid]
-            addr = self.model.jnt_qposadr[jid]
-            self.qpos_addr[name] = addr
+            qpos_addr = self.model.jnt_qposadr[jid]
+            qvel_addr = self.model.jnt_dofadr[jid]
+            self.qpos_addr[name] = qpos_addr
+            self.qvel_addr[name] = qvel_addr
 
-    def _set_body_xy(self, name: str, x: float, y: float, z: float = 0.1):
+    def _reset_body_orientation(self, name: str):
+        """
+        Force the given freejoint body to stay upright and non-rotating.
+        
+        - qpos orientation (quat) = [1, 0, 0, 0] (unit quaternion, no rotation)
+        - qvel angular part = 0 (no angular velocity)
+        """
+        addr = self.qpos_addr[name]
+        
+        # For freejoint: qpos[addr:addr+7] = [x, y, z, qw, qx, qy, qz]
+        # Set quaternion to unit quaternion (no rotation)
+        self.data.qpos[addr + 3] = 1.0  # qw
+        self.data.qpos[addr + 4] = 0.0  # qx
+        self.data.qpos[addr + 5] = 0.0  # qy
+        self.data.qpos[addr + 6] = 0.0  # qz
+        
+        # For freejoint: qvel has 6 DOF: [vx, vy, vz, wx, wy, wz]
+        # Zero out angular velocity (last 3 DOF) to prevent rotation
+        vaddr = self.qvel_addr[name]
+        # Freejoint has 6 DOF, so angular velocity is at indices 3, 4, 5
+        if vaddr + 5 < len(self.data.qvel):
+            self.data.qvel[vaddr + 3] = 0.0  # wx
+            self.data.qvel[vaddr + 4] = 0.0  # wy
+            self.data.qvel[vaddr + 5] = 0.0  # wz
+
+    def _set_body_xy(self, name: str, x: float, y: float, z: float = 0.08):
+        """
+        Set body position. Default z=0.08 matches robot height (half of 0.16m total height).
+        Also resets orientation to keep robot upright.
+        """
         addr = self.qpos_addr[name]
         # 设置位置
         self.data.qpos[addr + 0] = x
         self.data.qpos[addr + 1] = y
         self.data.qpos[addr + 2] = z
-        # 朝向保持默认（不改四元数）
+        # 保持姿态竖直、不转动
+        self._reset_body_orientation(name)
 
     def _get_body_xy(self, name: str) -> Tuple[float,float]:
         addr = self.qpos_addr[name]
@@ -157,6 +190,10 @@ class NavEnv:
             grid[ix_min:ix_max+1, iy_min:iy_max+1] = 1
 
         return grid, xs, ys
+
+    def get_room_bounds(self) -> Tuple[float, float, float, float]:
+        """Return (xmin, xmax, ymin, ymax)."""
+        return self.xmin, self.xmax, self.ymin, self.ymax
 
     def _geom_names(self, prefix: str) -> List[str]:
         names = []
@@ -291,7 +328,7 @@ class NavEnv:
         for name in self.agent_names:
             xy = np.array(self._get_body_xy(name))
             gy = np.array(self.goal_xy[name])
-            if np.linalg.norm(xy - gy) > 0.05:  # 更严格的阈值：5cm
+            if np.linalg.norm(xy - gy) > 0.15:  # Relaxed threshold: 15cm
                 ok = False
                 break
         return ok

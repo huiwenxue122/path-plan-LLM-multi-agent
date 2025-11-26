@@ -1,0 +1,123 @@
+<mujoco model="nav_room_formation">
+  <option timestep="0.01" gravity="0 0 -9.81" impratio="0.1"/>
+  <visual>
+    <map znear="0.01" zfar="50"/>
+  </visual>
+
+  <worldbody>
+    <!-- 地板 -->
+    <geom name="floor" type="plane" size="8 8 0.1" rgba="0.9 0.9 0.9 1"/>
+
+    <!-- 内墙：16m x 14m (进一步扩大房间以容纳20个机器人，提供更多空间) -->
+    <geom name="wall_n" type="box" pos="0 7 0.5"  size="8 0.05 0.5" rgba="0.2 0.2 0.2 1" contype="1" conaffinity="1"/>
+    <geom name="wall_s" type="box" pos="0 -7 0.5" size="8 0.05 0.5" rgba="0.2 0.2 0.2 1" contype="1" conaffinity="1"/>
+    <geom name="wall_e" type="box" pos="8 0 0.5"  size="0.05 7 0.5" rgba="0.2 0.2 0.2 1" contype="1" conaffinity="1"/>
+    <geom name="wall_w" type="box" pos="-8 0 0.5" size="0.05 7 0.5" rgba="0.2 0.2 0.2 1" contype="1" conaffinity="1"/>
+
+    <!-- 无障碍物版本 - 用于编队任务 -->
+    
+    <!-- 机器人：支持20个机器人 (robot_0 到 robot_19) -->
+    <!-- 初始位置将在运行时设置，这里只是占位符 -->
+    <!-- 使用HSV颜色空间生成不同颜色的机器人 -->
+    <body name="robot_0" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.90 0.18 0.18 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_1" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.90 0.54 0.18 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_2" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.90 0.90 0.18 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_3" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.54 0.90 0.18 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_4" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.18 0.90 0.18 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_5" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.18 0.90 0.54 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_6" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.18 0.90 0.90 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_7" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.18 0.54 0.90 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_8" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.18 0.18 0.90 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_9" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.54 0.18 0.90 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_10" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.90 0.18 0.90 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_11" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.90 0.18 0.54 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_12" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.72 0.36 0.18 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_13" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.36 0.72 0.18 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_14" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.18 0.72 0.36 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_15" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.18 0.36 0.72 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_16" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.72 0.18 0.36 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_17" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.54 0.72 0.18 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_18" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.18 0.54 0.72 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+    <body name="robot_19" pos="-3.5 0.0 0.1">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="2.0" diaginertia="0.1 0.1 0.1"/>
+      <geom type="cylinder" size="0.10 0.08" rgba="0.72 0.18 0.54 1" contype="1" conaffinity="1" friction="1.0 0.1 0.1"/>
+    </body>
+  </worldbody>
+</mujoco>

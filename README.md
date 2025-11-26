@@ -1,199 +1,274 @@
-# Language-Driven Multi-Robot Path Planning
+# 🤖 Multi-Robot Formation Control System
 
-## 🎯 Enhanced Dual-Robot Navigation System
+A comprehensive multi-robot formation control system with natural language interface, featuring collision-free path planning using ORCA (Optimal Reciprocal Collision Avoidance) and an interactive Streamlit web UI.
 
-### Overview
-This repository contains a dual-robot navigation system with natural language control. The system features:
-- **Multi-Agent Path Finding (MAPF)**: Priority-based collision-free path planning
-- **Natural Language Control**: LLM-powered command parsing for robot control
-- **Real-time 3D Visualization**: MuJoCo 3D viewer with interactive controls
-- **Challenging Obstacle Course**: 6 strategically placed obstacles requiring complex navigation
+![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-### Key Features
+## ✨ Features
 
-#### 1. Multi-Agent Path Finding (MAPF)
-- **Priority Planning**: Higher-priority robots plan first, avoiding collisions
-- **Vertex & Edge Conflict Prevention**: Prevents same-position and position-swapping conflicts
-- **Time-Extended A***: Time-aware path planning with wait actions
-- **Reservation Table**: Tracks occupied positions and edges across time
+### 🎯 Core Capabilities
+- **Multi-Robot Formation Control**: Control 5-30 robots to form various shapes (B, circle, grid, heart, line, random)
+- **Natural Language Interface**: Use LLM (GPT-4o) or rule-based parser to control robots via natural language commands
+- **Collision-Free Navigation**: ORCA algorithm ensures robots never collide during movement
+- **Interactive Web UI**: Streamlit-based interface for real-time visualization and control
+- **Video Export**: Record and export robot formation animations as MP4 videos
 
-#### 2. Natural Language Control
-- **LLM Integration**: GPT-4o powered command parsing
-- **Structured Task Plans**: Pydantic models for robust validation
-- **Offline Mode**: Deterministic parsing for demos without API calls
-- **Example Commands**: 
-  - `"Robot A go to (3, 2), Robot B go to (-2, 2), A has priority"`
-  - `"Alice 先到达目标，Bob 等 2 秒再出发"` (Chinese supported)
+### 🛡️ Collision Avoidance
+- **ORCA Algorithm**: Optimal Reciprocal Collision Avoidance for smooth, collision-free multi-robot navigation
+- **Safe Spacing**: Robots maintain minimum 0.5m distance from each other
+- **Dynamic Speed Control**: Automatic speed adjustment based on proximity to other robots
 
-#### 3. Visualization
-- **3D MuJoCo Viewer**: Real-time interactive visualization
-- **2D Matplotlib Animation**: Cross-platform trajectory visualization
-- **Path Visualization**: Visual representation of planned paths
+### 🎨 Formation Shapes
+- **Letter B**: Custom-designed letter B formation with 20 robots
+- **Circle**: Circular formations
+- **Grid**: Rectangular grid patterns
+- **Heart**: Heart-shaped formations
+- **Line**: Linear formations
+- **Random**: Random scattered positions
 
-### Quick Start
+## 🚀 Quick Start
 
-#### Method 1: End-to-End Natural Language Navigation (Recommended)
-```bash
-./llm_interface/run_with_viewer.sh
-# Or directly:
-python llm_interface/end_to_end_navigation.py
-```
-Then type a natural language command like:
-```
-Robot A go to (3, 2), Robot B go to (-2, 2), A has priority
-```
-
-#### Method 2: MAPF Path Planning Demo
-```bash
-python nav_world/run_mapf_demo.py
-```
-
-#### Method 3: 2D Matplotlib Animation
-```bash
-python my_demos/robot_navigation_demo.py
-```
-
-### Project Structure
-```
-language-driven-LLM-path-planing/
-├── llm_interface/                    # Natural language control
-│   ├── end_to_end_navigation.py     # Main end-to-end controller ⭐
-│   ├── llm_controller.py            # LLM parsing (Pydantic models)
-│   ├── find_valid_commands.py       # Utility to find valid goals
-│   └── run_with_viewer.sh          # Launch script ⭐
-│
-├── nav_world/                       # Core navigation system
-│   ├── nav_env_mapf.py             # MAPF-integrated environment
-│   ├── multi_agent_planner.py      # MAPF algorithm (Priority Planning)
-│   ├── nav_env.py                  # Base navigation environment
-│   ├── room.xml                    # MuJoCo 3D scene
-│   ├── run_mapf_demo.py            # MAPF demo script
-│   └── test_mapf.py                # MAPF test script
-│
-├── my_demos/                        # 2D visualization demos
-│   └── robot_navigation_demo.py    # Matplotlib animation
-│
-├── results/                         # Generated visualization files
-│
-└── docs/                            # Documentation (organized by category)
-    ├── user_guides/                 # User-facing guides
-    ├── technical/                   # Technical documentation
-    ├── project_reports/             # Project reports
-    └── module_docs/                 # Module-specific READMEs
-
-⭐ = Main entry points
-```
-
-### Technical Details
-
-#### Robot Configuration
-- **Alice**: Blue robot (default start: (-3.2, 2.0))
-- **Bob**: Green robot (default start: (-3.2, -2.3))
-- Goals can be set via natural language commands
-
-#### Path Planning Algorithms
-- **MAPF (Priority Planning)**: Multi-agent collision-free path planning
-  - Time-extended A* search
-  - Reservation table for conflict prevention
-  - Supports wait actions
-- **A* (Fallback)**: Single-agent path planning for independent navigation
-
-#### Environment
-- **Grid Resolution**: 0.1m for precise navigation
-- **Obstacle Layout**: 6 strategically placed obstacles
-- **Room Size**: 8m × 6m with walls
-
-### Requirements
-- Python 3.8+
-- MuJoCo 2.3.0+
-- NumPy, Matplotlib, ImageIO
-- macOS users need `mjpython` for 3D viewer
+### Prerequisites
+- **Python 3.11+** (required for rvo2/ORCA support)
+- Conda or pyenv for environment management
+- OpenAI API key (optional, for LLM features)
 
 ### Installation
-```bash
-# Clone the repository
-git clone https://github.com/huiwenxue122/language-driven-LLM-path-planing.git
-cd language-driven-LLM-path-planing
 
-# Install dependencies
+#### 1. Clone the Repository
+```bash
+git clone https://github.com/huiwenxue122/co-robot-pathfinding.git
+cd co-robot-pathfinding
+```
+
+#### 2. Create Python 3.11 Environment
+
+**Using conda (recommended):**
+```bash
+conda create -n co-robot-py311 python=3.11 -y
+conda activate co-robot-py311
+```
+
+**Using pyenv:**
+```bash
+pyenv install 3.11.6
+pyenv virtualenv 3.11.6 co-robot-py311
+pyenv activate co-robot-py311
+```
+
+#### 3. Install Dependencies
+```bash
+# Install base dependencies
 pip install -r requirements.txt
 
-# For macOS users, install MuJoCo viewer
-pip install mujoco
+# Install rvo2 for ORCA collision avoidance
+bash install_rvo2.sh
 ```
 
-### API Key Setup (Optional, for LLM features)
+**Note:** The `rvo2` library requires Python 3.11+ and must be compiled from source. The `install_rvo2.sh` script automates this process.
 
-To use the natural language control features, you'll need an OpenAI API key:
-
-**Option 1: Using .env file (recommended)**
+#### 4. Set Up OpenAI API Key (Optional)
 ```bash
+# Option 1: Using .env file (recommended)
 echo "OPENAI_API_KEY=your-api-key-here" > .env
-```
 
-**Option 2: Using openai_key.json**
-```bash
+# Option 2: Using openai_key.json
 echo '"your-api-key-here"' > openai_key.json
+
+# Option 3: Environment variable
+export OPENAI_API_KEY=your-api-key-here
 ```
 
-Note: The system will work in offline mode without an API key, using deterministic parsing.
+**Note:** The system works in offline mode without an API key, using rule-based parsing.
 
----
+## 🎮 Usage
 
-## 🎬 Results & Demos
+### Method 1: Streamlit Web UI (Recommended)
 
-### Navigation Animations
+Launch the interactive web interface:
 
-#### 2D Trajectory Visualization
-![Robot Navigation Animation](results/robot_navigation_animation.gif)
+```bash
+./run_app.sh
+```
 
-#### MAPF Path Planning Results
-![MAPF Navigation Result](results/mapf_navigation_result.png)
+Or directly:
+```bash
+streamlit run frontend/app.py
+```
 
-#### LLM-Controlled Navigation
-![LLM Navigation Result](results/llm_navigation_result.png)
+Then open your browser to `http://localhost:8501` and:
+1. Enter a natural language command (e.g., "form a letter B on the right side")
+2. Click "Parse Command" → "Generate Targets"
+3. Click "Start Simulation" to watch robots form the shape
+4. Optionally enable "Record video" to export the animation
 
-### Test Cases
+### Method 2: Command Line - Letter B Formation
 
-#### MAPF Test Case 1
-![MAPF Test Case 1](results/mapf_test_case1.png)
+Run the letter B formation demo with 3D viewer:
 
-#### MAPF Test Case 2
-![MAPF Test Case 2](results/mapf_test_case2.png)
+```bash
+python nav_world/run_formation_B.py --viewer
+```
 
+Watch 20 robots travel from the left side to form a letter **B** on the right side.
 
-> **Note**: All result files are stored in the `results/` directory. The GIF animation shows the 2D trajectory visualization, while PNG files show path planning results and test cases.
+### Method 3: Command Line - LLM Formation Control
 
----
+Use natural language to control formations:
+
+```bash
+python nav_world/run_formation_llm.py --viewer --prompt "form a letter B on the right side"
+```
+
+Or run interactively:
+```bash
+python nav_world/run_formation_llm.py --viewer
+# Then enter your command when prompted
+```
+
+## 📁 Project Structure
+
+```
+co-robot-pathfinding/
+├── frontend/                    # Streamlit web UI
+│   └── app.py                  # Main UI application
+│
+├── backend/                     # Backend controllers
+│   ├── controller.py           # Formation controller
+│   ├── formations.py           # Formation generators
+│   └── llm.py                  # LLM integration
+│
+├── nav_world/                   # Core navigation system
+│   ├── nav_env_formation_orca.py  # ORCA-based formation environment
+│   ├── nav_env.py              # Base navigation environment
+│   ├── orca_controller.py      # ORCA collision avoidance wrapper
+│   ├── formations.py           # Formation pattern generators
+│   ├── formation_task.py       # Formation task data models
+│   ├── llm_formation_controller.py  # LLM formation controller
+│   ├── room_formation.xml      # MuJoCo scene (16m × 14m room)
+│   ├── run_formation_B.py      # Letter B demo script
+│   └── run_formation_llm.py    # LLM-controlled formation script
+│
+├── llm_interface/              # LLM integration (legacy)
+│   ├── end_to_end_formation.py
+│   └── llm_controller.py
+│
+├── docs/                        # Documentation
+│   ├── LEARNING_GUIDE.md       # Complete learning guide
+│   └── user_guides/            # User-facing guides
+│
+├── results/                     # Generated visualizations
+│   ├── letter_b_20_robots.png
+│   └── ...
+│
+├── run_app.sh                   # Streamlit launcher script
+├── install_rvo2.sh             # rvo2 installation script
+├── requirements.txt            # Python dependencies
+└── README.md                   # This file
+```
+
+## 🎯 Key Components
+
+### ORCA Collision Avoidance
+- **File**: `nav_world/orca_controller.py`
+- **Algorithm**: Optimal Reciprocal Collision Avoidance (ORCA)
+- **Library**: `rvo2` (Python-RVO2)
+- **Features**:
+  - Robot radius: 0.25m (ensures 0.5m minimum spacing)
+  - Neighbor distance: 4.0m
+  - Time horizon: 4.0s
+  - Maximum speed: 1.5 m/s
+
+### Formation Generators
+- **File**: `nav_world/formations.py`
+- **Supported Shapes**: B, circle, grid, heart, line, random
+- **Features**:
+  - Minimum spacing: 0.5m between robots
+  - Region support: left_side, right_side, center
+  - Customizable margins and scaling
+
+### Streamlit UI
+- **File**: `frontend/app.py`
+- **Features**:
+  - Natural language command input
+  - Real-time 2D visualization (matplotlib)
+  - Video recording and export
+  - Interactive controls (start, stop, step, reset)
+
+## 🔧 Configuration
+
+### Room Size
+- **Current**: 16m × 14m (x: [-8, 8], y: [-7, 7])
+- **File**: `nav_world/room_formation.xml`
+- **Code**: `nav_world/nav_env.py` (lines 81-82)
+
+### Robot Configuration
+- **Default Count**: 20 robots
+- **Robot Radius**: 0.25m (ORCA)
+- **Minimum Spacing**: 0.5m (2 × radius)
+- **Maximum Speed**: 1.5 m/s
+
+### Formation Parameters
+- **B Formation**: 5.0m width × 6.0m height
+- **Minimum Spacing**: 0.5m between target points
+- **Margin**: 0.5m from room edges
+
+## 📊 Example Commands
+
+### Natural Language Commands
+```
+"form a letter B on the right side"
+"move all robots to form a circle in the center"
+"create a heart shape on the left side"
+"form a grid with 20 robots on the right"
+"scatter robots randomly"
+```
+
+### Supported Formation Types
+- `B` - Letter B formation
+- `circle` - Circular formation
+- `grid` - Rectangular grid
+- `heart` - Heart shape
+- `line` - Linear formation
+- `random` - Random scattered positions
+
+### Supported Regions
+- `right_side` - Right side of the room
+- `left_side` - Left side of the room
+- `center` - Center of the room
+
+## 🐛 Troubleshooting
+
+### ORCA Not Working
+If robots are colliding, ensure:
+1. Python 3.11+ environment is active
+2. `rvo2` is installed: `python -c "import rvo2; print('OK')"`
+3. Streamlit is running in the correct environment
+
+### Streamlit Port Already in Use
+```bash
+# Kill existing Streamlit processes
+pkill -f "streamlit run frontend/app.py"
+# Or use a different port
+streamlit run frontend/app.py --server.port 8502
+```
+
+### Import Errors
+```bash
+# Ensure project root is in PYTHONPATH
+export PYTHONPATH="$(pwd):$PYTHONPATH"
+```
 
 ## 📚 Documentation
 
-### 🎓 Learning Guide
-- **[LEARNING_GUIDE.md](docs/LEARNING_GUIDE.md)** ⭐ **Start Here!** - Complete learning path with code reading order and technical details
+- **[HOW_TO_RUN.md](HOW_TO_RUN.md)** - Detailed running guide
+- **[docs/LEARNING_GUIDE.md](docs/LEARNING_GUIDE.md)** - Complete learning path
+- **[QUICK_START_STREAMLIT.md](QUICK_START_STREAMLIT.md)** - Quick start for Streamlit UI
 
-### User Guides
-- **[HOW_TO_RUN.md](docs/user_guides/HOW_TO_RUN.md)** - Complete running guide with examples
-- **[END_TO_END_NAVIGATION_GUIDE.md](docs/user_guides/END_TO_END_NAVIGATION_GUIDE.md)** - End-to-end system guide
-- **[RUN_MAPF_3D.md](docs/user_guides/RUN_MAPF_3D.md)** - MAPF 3D visualization guide
-- **[HOW_TO_USE_3D_VIEWER.md](docs/user_guides/HOW_TO_USE_3D_VIEWER.md)** - 3D viewer usage guide
-- **[VALID_COMMANDS.md](docs/user_guides/VALID_COMMANDS.md)** - Valid command examples
+## 🎬 Demo Videos
 
-### Technical Documentation
-- **[MAPF_IMPLEMENTATION_EXPLAINED.md](docs/technical/MAPF_IMPLEMENTATION_EXPLAINED.md)** - Detailed MAPF algorithm explanation
-- **[HOW_LLM_CONTROLS_PATH_PLANNING.md](docs/technical/HOW_LLM_CONTROLS_PATH_PLANNING.md)** - LLM control flow explanation
-- **[NAV_ENV_VS_NAV_ENV_MAPF.md](docs/technical/NAV_ENV_VS_NAV_ENV_MAPF.md)** - File comparison guide
-- **[MAPF_README.md](docs/technical/MAPF_README.md)** - MAPF module documentation
-- **[HOW_TO_RUN_MAPF.md](docs/technical/HOW_TO_RUN_MAPF.md)** - MAPF technical guide
-
-### Project Reports
-- **[PROJECT_CHALLENGES.md](docs/project_reports/PROJECT_CHALLENGES.md)** - Challenges encountered
-- **[PROJECT_CHANGES.md](docs/project_reports/PROJECT_CHANGES.md)** - Before/after comparison
-- **[PROJECT_PROGRESS.md](docs/project_reports/PROJECT_PROGRESS.md)** - Progress report
-- **[PROJECT_SCOPE.md](docs/project_reports/PROJECT_SCOPE.md)** - Scope assessment
-- **[PROJECT_SCOPE_DEFINITION.md](docs/project_reports/PROJECT_SCOPE_DEFINITION.md)** - Scope definition
-- **[PROJECT_SUCCESS.md](docs/project_reports/PROJECT_SUCCESS.md)** - Success measures
-
----
+The system can export formation animations as MP4 videos. Enable "Record video while simulating" in the Streamlit UI, then click "Export Video" after the simulation completes.
 
 ## 🤝 Contributing
 
@@ -202,3 +277,18 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📄 License
 
 See [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **ORCA Algorithm**: Based on the Optimal Reciprocal Collision Avoidance algorithm
+- **rvo2 Library**: Python-RVO2 implementation
+- **MuJoCo**: Physics simulation engine
+- **Streamlit**: Web UI framework
+
+## 📧 Contact
+
+For questions or issues, please open an issue on GitHub.
+
+---
+
+**Made with ❤️ for multi-robot coordination research**

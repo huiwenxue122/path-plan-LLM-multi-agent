@@ -69,14 +69,16 @@ class AgentSpec(BaseModel):
         super().__init__(**data)
 
 
+class FormationAction(BaseModel):
+    """Optional high-level formation request (e.g., "form the letter B")."""
+
+    type: str = Field(..., description="Formation type identifier (e.g., 'letter_b')")
+    num_robots: Optional[int] = Field(default=None, description="Number of robots to use")
+
+
 class TaskPlan(BaseModel):
     """
-    Task plan structure for navigation
-    
-    Attributes:
-        task: Task type, must be "navigation", "nav", or "pathfinding"
-        agents: List of agent specifications with their goals and delays
-        priority: Priority order list (e.g., ["A", "B"] means A plans first)
+    Task plan structure for navigation (plus optional formation requests).
     """
     task: str = Field(
         default="navigation",
@@ -85,6 +87,10 @@ class TaskPlan(BaseModel):
     )
     agents: List[AgentSpec] = Field(..., description="List of agents with their goals and delays")
     priority: List[str] = Field(..., description="Priority order for path planning")
+    formation: Optional[FormationAction] = Field(
+        default=None,
+        description="Optional formation action (e.g., {'type': 'letter_b'})",
+    )
     
     def __init__(self, **data):
         """Custom init to validate agents and priority lists"""
@@ -118,9 +124,10 @@ def _fallback_plan() -> TaskPlan:
         task="navigation",
         agents=[
             AgentSpec(id="A", goal=[3.0, 2.0], delay=0.0),
-            AgentSpec(id="B", goal=[-2.0, 2.0], delay=0.0)
+            AgentSpec(id="B", goal=[-2.0, 2.0], delay=0.0),
         ],
-        priority=["A", "B"]
+        priority=["A", "B"],
+        formation=None,
     )
 
 
@@ -204,7 +211,8 @@ Your task is to parse natural language instructions and output a JSON object wit
         {"id": "A", "goal": [x, y], "delay": 0.0},
         {"id": "B", "goal": [x, y], "delay": 0.0}
     ],
-    "priority": ["A", "B"]
+    "priority": ["A", "B"],
+    "formation": {"type": "letter_b", "num_robots": 20}
 }
 
 Rules:
@@ -218,7 +226,11 @@ Rules:
 5. Goals must be [x, y] coordinates in world coordinates (meters)
 6. Priority list determines planning order (first agent plans first)
 7. Delay determines when each agent starts moving (in seconds)
-8. Output ONLY valid JSON, no additional text or markdown
+8. If the user explicitly asks for a formation (e.g., “form the letter B”, “让机器人形成字母B”),
+   set `"formation": {"type": "letter_b", "num_robots": <requested or null>}` and still return
+   a valid navigation plan (the navigation fields will be ignored when the formation field is set)
+9. If no formation is requested, set `"formation": null`
+10. Output ONLY valid JSON, no additional text or markdown
 
 IMPORTANT - Environment Constraints:
 - Environment bounds: x ∈ [-4.0, 4.0], y ∈ [-3.0, 3.0]
@@ -237,7 +249,10 @@ Example inputs and outputs:
   → {"task":"navigation","agents":[{"id":"A","goal":[3.0,1.6],"delay":0.0},{"id":"B","goal":[3.2,-1.0],"delay":300.0}],"priority":["A","B"]}
 
 - "both robots arrive their goals, A has priority" (no specific coordinates)
-  → {"task":"navigation","agents":[{"id":"A","goal":[3.0,1.6],"delay":0.0},{"id":"B","goal":[3.2,-1.0],"delay":0.0}],"priority":["A","B"]}
+  → {"task":"navigation","agents":[{"id":"A","goal":[3.0,1.6],"delay":0.0},{"id":"B","goal":[3.2,-1.0],"delay":0.0}],"priority":["A","B"],"formation":null}
+
+- "form the letter B with all robots"
+  → {"task":"navigation","agents":[{"id":"A","goal":[3.0,1.6],"delay":0.0},{"id":"B","goal":[3.2,-1.0],"delay":0.0}],"priority":["A","B"],"formation":{"type":"letter_b","num_robots":null}}
 """
 
     user_prompt = f"""Parse this navigation instruction and output the JSON plan:
@@ -276,6 +291,9 @@ Output ONLY the JSON object, no additional text."""
             return _fallback_plan()
         
         print(f"📋 Extracted JSON: {json_data}")
+
+        if "formation" not in json_data:
+            json_data["formation"] = None
         
         # Validate and parse using Pydantic
         try:
@@ -321,8 +339,15 @@ def llm_parse_instruction_offline(user_text: str) -> TaskPlan:
     # Simple pattern matching for offline parsing
     # This is a basic implementation - can be extended with more patterns
     
+    text_lower = user_text.lower()
     agents = []
     priority = []
+    formation_action: Optional[FormationAction] = None
+
+    # Detect global formation intent
+    formation_keywords = ["form the letter b", "form letter b", "letter b", "字母b", "形成字母b"]
+    if any(keyword in text_lower for keyword in formation_keywords):
+        formation_action = FormationAction(type="letter_b", num_robots=None)
     
     # Try to extract coordinates and agent IDs
     # Pattern: "A to (3, 2)" or "Robot A go to 3, 2" or "alice goes to 3.0, 1.6"
@@ -366,6 +391,11 @@ def llm_parse_instruction_offline(user_text: str) -> TaskPlan:
             
             agents.append(AgentSpec(id=agent_id, goal=[x, y], delay=delay))
     
+    if formation_action is not None and formation_action.num_robots is None:
+        formation_num = re.search(r'(\d+)\s*(?:个机器人|robots?)', text_lower)
+        if formation_num:
+            formation_action = FormationAction(type="letter_b", num_robots=int(formation_num.group(1)))
+    
     # Extract priority order
     priority_patterns = [
         r'([Aa]lice|[Bb]ob|[AB])\s+(?:first|优先|has priority|priority)',
@@ -384,7 +414,7 @@ def llm_parse_instruction_offline(user_text: str) -> TaskPlan:
     # If no agents found, check if instruction mentions goals without coordinates
     if not agents:
         # Check if instruction mentions "goals" or "arrive" without specific coordinates
-        if any(keyword in user_text.lower() for keyword in ['goal', 'arrive', 'reach', 'target', 'destination']):
+        if any(keyword in text_lower for keyword in ['goal', 'arrive', 'reach', 'target', 'destination']):
             # Use safe default positions on the right side (x > 2.0) to avoid obstacles
             print("⚠️  Warning: No specific coordinates found. Using safe default positions (right side).")
             # Extract delay information
@@ -392,7 +422,7 @@ def llm_parse_instruction_offline(user_text: str) -> TaskPlan:
             delay_b = 0.0
             
             # Check for delay patterns
-            if 'wait' in user_text.lower() or 'delay' in user_text.lower():
+            if 'wait' in text_lower or 'delay' in text_lower:
                 # Try to find which agent should wait
                 if 'first' in user_text.lower() or 'depart first' in user_text.lower():
                     # The one that doesn't "depart first" should wait
@@ -429,7 +459,8 @@ def llm_parse_instruction_offline(user_text: str) -> TaskPlan:
         task_plan = TaskPlan(
             task="navigation",
             agents=agents,
-            priority=priority
+            priority=priority,
+            formation=formation_action,
         )
         print(f"✅ Offline parser parsed instruction: {user_text}")
         return task_plan

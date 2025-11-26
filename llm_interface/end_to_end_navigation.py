@@ -23,9 +23,14 @@ from typing import Dict, List, Tuple
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-from llm_interface.llm_controller import llm_parse_instruction, llm_parse_instruction_offline
+from llm_interface.llm_controller import (
+    FormationAction,
+    llm_parse_instruction,
+    llm_parse_instruction_offline,
+)
 from nav_world.nav_env_mapf import NavEnvMAPF
 from nav_world.multi_agent_planner import AgentSpec as MAPFAgentSpec
+from nav_world.nav_env_formation_orca import NavEnvFormationORCA
 
 
 class EndToEndNavigationController:
@@ -45,6 +50,8 @@ class EndToEndNavigationController:
             use_offline_parser: If True, use offline parser (no API calls)
         """
         self.use_offline_parser = use_offline_parser
+        self.xml_path = xml_path
+        self.formation_xml = os.path.join(project_root, "nav_world", "room_formation.xml")
         
         # Initialize navigation environment
         print("📦 Initializing navigation environment...")
@@ -82,8 +89,51 @@ class EndToEndNavigationController:
         print(f"   Task: {task_plan.task}")
         print(f"   Agents: {[(a.id, a.goal, f'delay={a.delay}s') for a in task_plan.agents]}")
         print(f"   Priority: {task_plan.priority}")
+        if task_plan.formation:
+            print(f"   Formation request: {task_plan.formation}")
         
         return task_plan
+
+    def run_formation_action(self, formation: FormationAction, sim_time: float = 35.0, dt: float = 0.05):
+        """
+        Execute the ORCA-based formation environment when the LLM requests it.
+        """
+        if not os.path.exists(self.formation_xml):
+            raise FileNotFoundError(f"Formation XML not found: {self.formation_xml}")
+
+        if formation.type.lower() not in ["letter_b", "b"]:
+            print(f"⚠️  Formation type '{formation.type}' not supported yet. Falling back to letter B.")
+
+        num_robots = formation.num_robots or 20
+        env = NavEnvFormationORCA(xml_path=self.formation_xml, num_robots=num_robots)
+        env.reset(use_B=True)
+
+        print("\n🎨 Formation mode enabled (ORCA controller)")
+        print(f"   Robots: {num_robots}, Target: Letter B, Duration: {sim_time:.1f}s")
+
+        max_steps = int(sim_time / dt)
+        for step_idx in range(max_steps):
+            _, done = env.step(dt=dt)
+            if step_idx % 40 == 0 or done:
+                dists = self._distance_to_goals(env)
+                reached = sum(d < 0.05 for d in dists)
+                print(f"   Step {step_idx:04d}: {reached}/{len(dists)} robots at goal")
+            if done:
+                break
+
+        print("\n📊 Formation distances:")
+        for name, dist in zip(env.agent_names, self._distance_to_goals(env)):
+            status = "✅" if dist < 0.05 else "⏳"
+            print(f"   {status} {name}: {dist:.3f} m")
+
+    @staticmethod
+    def _distance_to_goals(env: NavEnvFormationORCA) -> List[float]:
+        dists = []
+        for name in env.agent_names:
+            pos = np.array(env._get_body_xy(name))
+            goal = np.array(env.goal_xy[name])
+            dists.append(float(np.linalg.norm(pos - goal)))
+        return dists
     
     def set_goals_from_plan(self, task_plan):
         """
@@ -531,6 +581,14 @@ def main():
     try:
         # Step 1: Parse instruction
         task_plan = controller.parse_user_instruction(user_text)
+
+        # Formation shortcut
+        if task_plan.formation is not None:
+            controller.run_formation_action(task_plan.formation)
+            print("\n" + "=" * 60)
+            print("✅ Formation request completed via ORCA environment!")
+            print("=" * 60)
+            return
         
         # Step 2: Set goals
         controller.set_goals_from_plan(task_plan)
